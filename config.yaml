@@ -1,0 +1,6 @@
+clusters:
+  - name: test-cluster
+    cluster_id: "a1dd49d5-bff1-4102-b046-bb51838fa925"
+    node_pool_id: "pool-ljhixhtq5"
+    scale_up_count: 3
+    scale_down_count: 1
