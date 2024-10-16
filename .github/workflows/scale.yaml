@@ -21,7 +21,7 @@ jobs:
           -H "Authorization: Bearer ${{ secrets.DO_USER }}" \
           -H "Content-Type: application/json" \
           -d "{\"count\": ${MIN_SCALE}}" \
-          "https://api.digitalocean.com/v2/kubernetes/clusters/<cluster-id>/node_pools/<node-pool-id>"
+          "https://api.digitalocean.com/v2/kubernetes/clusters/a1dd49d5-bff1-4102-b046-bb51838fa925/node_pools/9f2a259d-91e4-49b3-a13e-a591b53c9eb0"
 
       - name: Scale up DOKS node pool
         run: |
@@ -31,4 +31,4 @@ jobs:
           -H "Authorization: Bearer ${{ secrets.DO_USER }}" \
           -H "Content-Type: application/json" \
           -d "{\"count\": ${MAX_SCALE}}" \
-          "https://api.digitalocean.com/v2/kubernetes/clusters/<cluster-id>/node_pools/<node-pool-id>"
+          "https://api.digitalocean.com/v2/kubernetes/clusters/a1dd49d5-bff1-4102-b046-bb51838fa925/node_pools/9f2a259d-91e4-49b3-a13e-a591b53c9eb0"
