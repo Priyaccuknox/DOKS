@@ -18,7 +18,7 @@ jobs:
           MIN_SCALE=1  # Minimum scale down count
           echo "Scaling down DOKS node pool to ${MIN_SCALE} nodes..."
           curl -X PUT \
-          -H "Authorization: Bearer ${{ secrets.DO_API_TOKEN }}" \
+          -H "Authorization: Bearer ${{ secrets.DO_USER }}" \
           -H "Content-Type: application/json" \
           -d "{\"count\": ${MIN_SCALE}}" \
           "https://api.digitalocean.com/v2/kubernetes/clusters/<cluster-id>/node_pools/<node-pool-id>"
@@ -28,7 +28,7 @@ jobs:
           MAX_SCALE=3  # Maximum scale up count
           echo "Scaling up DOKS node pool to ${MAX_SCALE} nodes..."
           curl -X PUT \
-          -H "Authorization: Bearer ${{ secrets.DO_API_TOKEN }}" \
+          -H "Authorization: Bearer ${{ secrets.DO_USER }}" \
           -H "Content-Type: application/json" \
           -d "{\"count\": ${MAX_SCALE}}" \
           "https://api.digitalocean.com/v2/kubernetes/clusters/<cluster-id>/node_pools/<node-pool-id>"
