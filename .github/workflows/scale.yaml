@@ -13,22 +13,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Scale down DOKS node pool
-        run: |
-          MIN_SCALE=1  # Minimum scale down count
-          echo "Scaling down DOKS node pool to ${MIN_SCALE} nodes..."
-          curl -X PUT \
-          -H "Authorization: Bearer ${{ secrets.DO_USER }}" \
-          -H "Content-Type: application/json" \
-          -d "{\"count\": ${MIN_SCALE}}" \
-          "https://api.digitalocean.com/v2/kubernetes/clusters/a1dd49d5-bff1-4102-b046-bb51838fa925/node_pools/9f2a259d-91e4-49b3-a13e-a591b53c9eb0"
-
-      # - name: Scale up DOKS node pool
+      # - name: Scale down DOKS node pool
       #   run: |
-      #     MAX_SCALE=3  # Maximum scale up count
-      #     echo "Scaling up DOKS node pool to ${MAX_SCALE} nodes..."
+      #     MIN_SCALE=1  # Minimum scale down count
+      #     echo "Scaling down DOKS node pool to ${MIN_SCALE} nodes..."
       #     curl -X PUT \
       #     -H "Authorization: Bearer ${{ secrets.DO_USER }}" \
       #     -H "Content-Type: application/json" \
-      #     -d "{\"count\": ${MAX_SCALE}}" \
+      #     -d "{\"count\": ${MIN_SCALE}}" \
       #     "https://api.digitalocean.com/v2/kubernetes/clusters/a1dd49d5-bff1-4102-b046-bb51838fa925/node_pools/9f2a259d-91e4-49b3-a13e-a591b53c9eb0"
+
+      - name: Scale up DOKS node pool
+        run: |
+          MAX_SCALE=3  # Maximum scale up count
+          echo "Scaling up DOKS node pool to ${MAX_SCALE} nodes..."
+          curl -X PUT \
+          -H "Authorization: Bearer ${{ secrets.DO_USER }}" \
+          -H "Content-Type: application/json" \
+          -d "{\"count\": ${MAX_SCALE}}" \
+          "https://api.digitalocean.com/v2/kubernetes/clusters/a1dd49d5-bff1-4102-b046-bb51838fa925/node_pools/9f2a259d-91e4-49b3-a13e-a591b53c9eb0"
