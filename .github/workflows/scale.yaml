@@ -1,10 +1,10 @@
 name: Scale DOKS Node Pools
 
 on:
-  workflow_dispatch:  # Allows you to trigger manually if needed
+  workflow_dispatch:  # Allows manual triggering
   schedule:
-    - cron: '20 19 16 10 *'  # At 7:15 PM on October 16, 2024 (scale down)
-    - cron: '30 19 16 10 *'  # At 7:30 PM on October 16, 2024 (scale up)
+    - cron: '27 19 16 10 *'  # At 7:15 PM on October 16, 2024 (scale down)
+    - cron: '32 19 16 10 *'  # At 7:30 PM on October 16, 2024 (scale up)
 
 jobs:
   scale-doks:
@@ -14,19 +14,19 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Scale down DOKS node pool on October 16, 7:15 PM
-        if: ${{ github.event_name == 'schedule' && github.run_attempt == 1 }}
         run: |
+          MIN_SCALE=1  # Minimum scale down count
           curl -X PUT \
           -H "Authorization: Bearer ${{ secrets.DO_API_TOKEN }}" \
           -H "Content-Type: application/json" \
-          -d '{"count": 0}' \
+          -d "{\"count\": ${MIN_SCALE}}" \
           "https://api.digitalocean.com/v2/kubernetes/clusters/<cluster-id>/node_pools/<node-pool-id>"
 
       - name: Scale up DOKS node pool on October 16, 7:30 PM
-        if: ${{ github.event_name == 'schedule' && github.run_attempt == 1 }}
         run: |
+          MAX_SCALE=3  # Maximum scale up count
           curl -X PUT \
           -H "Authorization: Bearer ${{ secrets.DO_API_TOKEN }}" \
           -H "Content-Type: application/json" \
-          -d '{"count": <desired-node-count>}' \
+          -d "{\"count\": ${MAX_SCALE}}" \
           "https://api.digitalocean.com/v2/kubernetes/clusters/<cluster-id>/node_pools/<node-pool-id>"
