@@ -2,10 +2,10 @@ name: Scale DOKS Node Pools Dynamically
 
 on:
   schedule:
-    # Scale down every day at 5:25 PM IST (11:55 AM UTC)
-    - cron: "55 11 * * *"
-    # Scale up every day at 5:30 PM IST (12:00 PM UTC)
-    - cron: "0 12 * * *"
+    # Scale down every day at 5:40 PM IST (12:10 PM UTC)
+    - cron: "10 12 * * *"
+    # Scale up every day at 5:45 PM IST (12:15 PM UTC)
+    - cron: "15 12 * * *"
 
 jobs:
   scale-doks:
@@ -17,18 +17,21 @@ jobs:
       - name: Install yq for YAML parsing
         run: |
           sudo apt-get update
-          sudo apt-get install -y yq
+          sudo apt-get install -y wget
+          # Download and install yq
+          wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq
+          chmod +x /usr/bin/yq
 
       - name: Give execute permission to the script
         run: |
           chmod +x ./scale_doks.sh
 
       - name: Scale down node pools (scheduled)
-        if: github.event.schedule == '55 11 * * *'
+        if: github.event.schedule == '10 12 * * *'
         run: |
           ./scale_doks.sh scale-down
 
       - name: Scale up node pools (scheduled)
-        if: github.event.schedule == '0 12 * * *'
+        if: github.event.schedule == '15 12 * * *'
         run: |
           ./scale_doks.sh scale-up
