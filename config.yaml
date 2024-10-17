@@ -4,5 +4,3 @@ clusters:
     node_pool_id: "9f2a259d-91e4-49b3-a13e-a591b53c9eb0"
     scale_up_count: 3
     scale_down_count: 1
-    min_scale: 1
-    max_scale: 3
