@@ -2,10 +2,10 @@ name: Scale DOKS Node Pools Dynamically
 
 on:
   schedule:
-    # Scale up every day at 5:05 PM IST (11:35 AM UTC)
-    - cron: "35 11 * * *"
-    # Scale down every day at 5:10 PM IST (11:40 AM UTC)
-    - cron: "40 11 * * *"
+    # Scale up every day at 5:15 PM IST (11:45 AM UTC)
+    - cron: "45 11 * * *"
+    # Scale down every day at 5:08 PM IST (11:38 AM UTC)
+    - cron: "38 11 * * *"
 
 jobs:
   scale-doks:
@@ -24,11 +24,11 @@ jobs:
           chmod +x scale_doks.sh
 
       - name: Scale down node pools (scheduled)
-        if: github.event.schedule == '40 11 * * *'
+        if: github.event.schedule == '38 11 * * *'
         run: |
           ./scale_doks.sh scale-down
 
       - name: Scale up node pools (scheduled)
-        if: github.event.schedule == '35 11 * * *'
+        if: github.event.schedule == '45 11 * * *'
         run: |
           ./scale_doks.sh scale-up
