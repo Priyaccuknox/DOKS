@@ -25,6 +25,8 @@ jobs:
           chmod +x ./scale_doks.sh
 
       - name: Scale down node pools
+        env:  
+          DO_USER: ${{ secrets.DO_USER }}
         run: ./scale_doks.sh scale-down
 
   # Uncomment to enable scale-up job
