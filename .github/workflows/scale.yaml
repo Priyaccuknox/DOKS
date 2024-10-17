@@ -1,35 +1,32 @@
 name: Scale DOKS Node Pools Dynamically
 
 on:
-  # Trigger the workflow on push events to the main branch
-  push:
-    branches:
-      - main
+  schedule:
+    - cron: '3 13 * * *'  # At 6:33 PM IST (1:03 PM UTC) every day (scale down)
+    - cron: '8 13 * * *'  # At 6:38 PM IST (1:08 PM UTC) every day (scale up)
 
 jobs:
-  # scale-down:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v3
+  scale-down:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-  #     - name: Install yq for YAML parsing
-  #       run: |
-  #         sudo apt-get update
-  #         sudo apt-get install -y wget
-  #         wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq
-  #         sudo chmod +x /usr/local/bin/yq
+      - name: Install yq for YAML parsing
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget
+          wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq
+          sudo chmod +x /usr/local/bin/yq
 
-  #     - name: Give execute permission to the script
-  #       run: |
-  #         chmod +x ./scale_doks.sh
+      - name: Give execute permission to the script
+        run: chmod +x ./scale_doks.sh
 
-  #     - name: Scale down node pools
-  #       env:  
-  #         DO_USER: ${{ secrets.DO_USER }}
-  #       run: ./scale_doks.sh scale-down
+      - name: Scale down node pools
+        env:  
+          DO_USER: ${{ secrets.DO_USER }}
+        run: ./scale_doks.sh scale-down
 
-  # Uncomment to enable scale-up job
   scale-up:
     runs-on: ubuntu-latest
     steps:
@@ -44,8 +41,7 @@ jobs:
           sudo chmod +x /usr/local/bin/yq
   
       - name: Give execute permission to the script
-        run: |
-          chmod +x ./scale_doks.sh
+        run: chmod +x ./scale_doks.sh
   
       - name: Scale up node pools
         env:  
