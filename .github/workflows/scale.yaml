@@ -2,12 +2,11 @@ name: Scale DOKS Node Pools Dynamically
 
 on:
   schedule:
-    - cron: '18 13 * * *'  
-    - cron: '23 13 * * *'  
+    - cron: '32 13 * * *'  
+    - cron: '37 13 * * *'  
 
 jobs:
-  scale-down:
-    if: github.event_name == 'schedule' && github.event.schedule == '18 13 * * *'  # Check for scale down schedule
+  scale-doks:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -24,28 +23,13 @@ jobs:
         run: chmod +x ./scale_doks.sh
 
       - name: Scale down node pools
+        if: github.event.schedule == '32 13 * * *'
         env:  
           DO_USER: ${{ secrets.DO_USER }}
         run: ./scale_doks.sh scale-down
-
-  scale-up:
-    if: github.event_name == 'schedule' && github.event.schedule == '23 13 * * *'  # Check for scale up schedule
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-  
-      - name: Install yq for YAML parsing
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y wget
-          wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq
-          sudo chmod +x /usr/local/bin/yq
-  
-      - name: Give execute permission to the script
-        run: chmod +x ./scale_doks.sh
   
       - name: Scale up node pools
+        if: github.event.schedule == '37 13 * * *'
         env:  
           DO_USER: ${{ secrets.DO_USER }}
         run: ./scale_doks.sh scale-up
