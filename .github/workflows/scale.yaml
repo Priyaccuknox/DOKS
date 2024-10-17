@@ -3,9 +3,9 @@ name: Scale DOKS Node Pools Dynamically
 on:
   schedule:
     # Scale down every day at 10:27 AM IST (4:57 AM UTC)
-    - cron: "55 22 * * *"
+    - cron: "32 11 * * *"
     # Scale up every day at 10:32 AM IST (5:02 AM UTC)
-    - cron: "0 23 * * *"
+    - cron: "37 11 * * *"
 
 jobs:
   scale-doks:
@@ -19,43 +19,16 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y yq
 
-      - name: Parse config.yaml for scale values
-        id: parse_config
+      - name: Give execute permission to the script
         run: |
-          CLUSTER_ID=$(yq '.clusters[0].cluster_id' config.yaml)
-          NODE_POOL_ID=$(yq '.clusters[0].node_pool_id' config.yaml)
-          SCALE_UP=$(yq '.clusters[0].scale_up_count' config.yaml)
-          SCALE_DOWN=$(yq '.clusters[0].scale_down_count' config.yaml)
+          chmod +x scale_doks.sh
 
-          echo "CLUSTER_ID=${CLUSTER_ID}" >> $GITHUB_ENV
-          echo "NODE_POOL_ID=${NODE_POOL_ID}" >> $GITHUB_ENV
-          echo "SCALE_UP=${SCALE_UP}" >> $GITHUB_ENV
-          echo "SCALE_DOWN=${SCALE_DOWN}" >> $GITHUB_ENV
-
-  scale-down:
-    runs-on: ubuntu-latest
-    needs: scale-doks
-    steps:
-      - name: Scale down DOKS node pool
+      - name: Scale down node pools (scheduled)
         if: github.event.schedule == '55 22 * * *'
         run: |
-          echo "Scaling down DOKS node pool to ${SCALE_DOWN} nodes..."
-          curl -X PUT \
-          -H "Authorization: Bearer ${{ secrets.DO_USER }}" \
-          -H "Content-Type: application/json" \
-          -d "{\"count\": ${SCALE_DOWN}}" \
-          "https://api.digitalocean.com/v2/kubernetes/clusters/${CLUSTER_ID}/node_pools/${NODE_POOL_ID}"
+          ./scale_doks.sh scale-down
 
-  scale-up:
-    runs-on: ubuntu-latest
-    needs: scale-doks
-    steps:
-      - name: Scale up DOKS node pool
+      - name: Scale up node pools (scheduled)
         if: github.event.schedule == '0 23 * * *'
         run: |
-          echo "Scaling up DOKS node pool to ${SCALE_UP} nodes..."
-          curl -X PUT \
-          -H "Authorization: Bearer ${{ secrets.DO_USER }}" \
-          -H "Content-Type: application/json" \
-          -d "{\"count\": ${SCALE_UP}}" \
-          "https://api.digitalocean.com/v2/kubernetes/clusters/${CLUSTER_ID}/node_pools/${NODE_POOL_ID}"
+          ./scale_doks.sh scale-up
