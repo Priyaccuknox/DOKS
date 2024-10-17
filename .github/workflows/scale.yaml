@@ -2,11 +2,12 @@ name: Scale DOKS Node Pools Dynamically
 
 on:
   schedule:
-    - cron: '15 13 * * *'  
-    - cron: '20 13 * * *'  
+    - cron: '18 13 * * *'  
+    - cron: '23 13 * * *'  
 
 jobs:
   scale-down:
+    if: github.event_name == 'schedule' && github.event.schedule == '18 13 * * *'  # Check for scale down schedule
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -28,6 +29,7 @@ jobs:
         run: ./scale_doks.sh scale-down
 
   scale-up:
+    if: github.event_name == 'schedule' && github.event.schedule == '23 13 * * *'  # Check for scale up schedule
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
