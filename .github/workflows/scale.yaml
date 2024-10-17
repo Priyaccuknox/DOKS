@@ -7,45 +7,47 @@ on:
       - main
 
 jobs:
-  scale-down:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Install yq for YAML parsing
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y wget
-          wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq
-          sudo chmod +x /usr/local/bin/yq
-
-      - name: Give execute permission to the script
-        run: |
-          chmod +x ./scale_doks.sh
-
-      - name: Scale down node pools
-        env:  
-          DO_USER: ${{ secrets.DO_USER }}
-        run: ./scale_doks.sh scale-down
-
-  # Uncomment to enable scale-up job
-  # scale-up:
+  # scale-down:
   #   runs-on: ubuntu-latest
   #   steps:
   #     - name: Checkout code
   #       uses: actions/checkout@v3
-  #
+
   #     - name: Install yq for YAML parsing
   #       run: |
   #         sudo apt-get update
   #         sudo apt-get install -y wget
   #         wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq
   #         sudo chmod +x /usr/local/bin/yq
-  #
+
   #     - name: Give execute permission to the script
   #       run: |
   #         chmod +x ./scale_doks.sh
-  #
-  #     - name: Scale up node pools
-  #       run: ./scale_doks.sh scale-up
+
+  #     - name: Scale down node pools
+  #       env:  
+  #         DO_USER: ${{ secrets.DO_USER }}
+  #       run: ./scale_doks.sh scale-down
+
+  # Uncomment to enable scale-up job
+  scale-up:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+  
+      - name: Install yq for YAML parsing
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget
+          wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq
+          sudo chmod +x /usr/local/bin/yq
+  
+      - name: Give execute permission to the script
+        run: |
+          chmod +x ./scale_doks.sh
+  
+      - name: Scale up node pools
+        env:  
+          DO_USER: ${{ secrets.DO_USER }}
+        run: ./scale_doks.sh scale-up
