@@ -2,8 +2,8 @@ name: Scale DOKS Node Pools Dynamically
 
 on:
   schedule:
-    - cron: '30 14 * * 5'  
-    - cron: '30 2 * * 1'  
+    - cron: '30 14 * * 5'  # At 8:00 PM IST (2:30 PM UTC) every Friday (scale down)
+    - cron: '30 2 * * 1'  # At 8:00 AM IST (2:30 AM UTC) every Monday (scale up)
 
 jobs:
   scale-doks:
