@@ -58,9 +58,8 @@ jobs:
       - name: Make API Request
         run: |
           curl -H "Authorization: Bearer $ACCESS_TOKEN" \
-               "https://container.googleapis.com/v1/projects/${{ env.PROJECT_ID }}/zones/us-central1/clusters/devops-test-cluster"
+                "https://container.googleapis.com/v1/projects/${{ env.PROJECT_ID }}/locations/us-central1/clusters/devops-test-cluster"
 
-  
       # - name: Scale up node pools
       #   if: github.event.schedule == '0 2 * * 1'
       #   env:  
