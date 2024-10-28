@@ -27,9 +27,9 @@ jobs:
       
       - name: Set up GCP credentials
         run: |
-          echo "${{ secrets.GCP_CREDENTIALS }}" > gcp-key.json
+          echo "${{ secrets.GCP_CREDENTIALS }}" > ./GKE/gcp-key.json
           # Check if the file was created
-          ls -l gcp-key.json
+          ls -l ./GKE/gcp-key.json
 
       - name: Scale down node pools
         if: github.event_name == 'push'  
@@ -37,7 +37,8 @@ jobs:
           cd GKE  
           ./scale_gke.sh scale-down
         env:  
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcp-key.json
+          GOOGLE_APPLICATION_CREDENTIALS: /home/runner/work/DOKS/DOKS/GKE/gcp-key.json
+  
   
       # - name: Scale up node pools
       #   if: github.event.schedule == '0 2 * * 1'
