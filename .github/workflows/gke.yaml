@@ -31,7 +31,7 @@ jobs:
       - name: Activate GCP service account
         run: |
           gcloud auth activate-service-account --key-file=./GKE/gcp-key.json
-          gcloud container clusters list  # Optional: Verify the activation
+          gcloud container clusters list  # Optional
 
       - name: Scale down node pools
         if: github.event_name == 'push'  
