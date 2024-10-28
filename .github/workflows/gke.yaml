@@ -1,9 +1,6 @@
 name: Scale GKE Node Pools Dynamically
 
 on:
-  # schedule:
-  #   - cron: '30 14 * * 5'  # At 8:00 PM IST (2:30 PM UTC) every Friday (scale down)
-  #   - cron: '0 2 * * 1'     # At 7:30 AM IST (2:00 AM UTC) every Monday (scale up)
   push:
     branches:
       - main  
@@ -31,19 +28,23 @@ jobs:
           ls -l ./GKE/gcp-key.json
         shell: bash
   
+      - name: Activate GCP service account
+        run: |
+          gcloud auth activate-service-account --key-file=./GKE/gcp-key.json
+          gcloud container clusters list  # Optional: Verify the activation
+
       - name: Scale down node pools
         if: github.event_name == 'push'  
         run: |
           cd GKE  
           ./scale_gke.sh scale-down
         env:  
-          GOOGLE_APPLICATION_CREDENTIALS: /home/runner/work/DOKS/DOKS/GKE/gcp-key.json
-  
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/GKE/gcp-key.json
   
       # - name: Scale up node pools
       #   if: github.event.schedule == '0 2 * * 1'
       #   env:  
-      #     GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcp-key.json
+      #     GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/GKE/gcp-key.json
       #   run: |
       #     cd GKE  
       #     ./scale_gke.sh scale-up
