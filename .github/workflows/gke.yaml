@@ -29,7 +29,6 @@ jobs:
         run: |
           echo "${{ secrets.GCP_CREDENTIALS }}" > ./GKE/gcp-key.json
           ls -l ./GKE/gcp-key.json
-          cat ./GKE/gcp-key.json
         shell: bash
   
       - name: Scale down node pools
@@ -37,8 +36,8 @@ jobs:
         run: |
           cd GKE  
           ./scale_gke.sh scale-down
-        # env:  
-        #   GOOGLE_APPLICATION_CREDENTIALS: /home/runner/work/DOKS/DOKS/GKE/gcp-key.json
+        env:  
+          GOOGLE_APPLICATION_CREDENTIALS: /home/runner/work/DOKS/DOKS/GKE/gcp-key.json
   
   
       # - name: Scale up node pools
