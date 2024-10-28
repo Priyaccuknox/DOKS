@@ -1,6 +1,6 @@
 clusters:
-  - name: "your-gke-cluster-name"
-    cluster_id: "your-gke-cluster-id"  
-    node_pool_id: "default-pool"        
+  - name: "accuknox-cnapp"
+    cluster_id: "devops-test-cluster"  
+    node_pool_id: "test-nodes"        
     scale_up_count: 3                   
     scale_down_count: 1                  
