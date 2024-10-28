@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Load required variables
+project_id=$(yq '.project_id' config.yaml)  # Read the project ID
 clusters=$(yq '.clusters | length' config.yaml)
 
 # Check if the operation is passed (scale-up or scale-down)
@@ -20,6 +21,12 @@ fi
 echo "Activating service account..."
 gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS" || {
   echo "Error: Failed to activate service account."
+  exit 1
+}
+
+# Set the GCP project
+gcloud config set project "$project_id" || {
+  echo "Error: Failed to set project."
   exit 1
 }
 

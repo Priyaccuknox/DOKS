@@ -1,3 +1,4 @@
+project_id: "accuknox-cnapp"
 clusters:
   - name: "accuknox-cnapp"
     cluster_id: "devops-test-cluster"  
