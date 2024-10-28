@@ -31,7 +31,7 @@ jobs:
       - name: Read Project ID from config.yaml
         id: read_project_id
         run: |
-          PROJECT_ID=$(yq '.project_id' config.yaml)
+          PROJECT_ID=$(yq '.project_id' GKE/config.yaml)
           echo "PROJECT_ID=${PROJECT_ID}" >> $GITHUB_ENV
 
       - name: Activate GCP service account
