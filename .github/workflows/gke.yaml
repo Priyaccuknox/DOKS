@@ -40,6 +40,12 @@ jobs:
           gcloud config set project ${{ env.PROJECT_ID }}  # Use the dynamic project ID
           gcloud container clusters list  # Optional
 
+      - name: Get Access Token
+        id: get_token
+        run: |
+          ACCESS_TOKEN=$(gcloud auth print-access-token)
+          echo "ACCESS_TOKEN=${ACCESS_TOKEN}" >> $GITHUB_ENV
+
       - name: Scale down node pools
         if: github.event_name == 'push'  
         run: |
@@ -48,6 +54,12 @@ jobs:
         env:  
           GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/GKE/gcp-key.json
           CLOUDSDK_CORE_PROJECT: ${{ env.PROJECT_ID }}  # Use the dynamic project ID
+
+      - name: Make API Request
+        run: |
+          curl -H "Authorization: Bearer $ACCESS_TOKEN" \
+               "https://container.googleapis.com/v1/projects/${{ env.PROJECT_ID }}/zones/us-central1/clusters/devops-test-cluster"
+
   
       # - name: Scale up node pools
       #   if: github.event.schedule == '0 2 * * 1'
