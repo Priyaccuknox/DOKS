@@ -30,16 +30,14 @@ jobs:
           echo "${{ secrets.GCP_CREDENTIALS }}" > gcp-key.json
           # Check if the file was created
           ls -l gcp-key.json
-        env:
-          GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
 
       - name: Scale down node pools
         if: github.event_name == 'push'  
-        env:  
-          GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
         run: |
           cd GKE  
           ./scale_gke.sh scale-down
+        env:  
+          GCP_CREDENTIALS: gcp-key.json
   
       # - name: Scale up node pools
       #   if: github.event.schedule == '0 2 * * 1'

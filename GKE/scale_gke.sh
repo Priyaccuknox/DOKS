@@ -10,21 +10,15 @@ if [[ "$operation" != "scale-up" && "$operation" != "scale-down" ]]; then
   exit 1
 fi
 
-# Ensure the GCP_CREDENTIALS variable is set
-if [[ -z "$GCP_CREDENTIALS" ]]; then
-  echo "Error: GCP_CREDENTIALS environment variable is not set."
-  exit 1
-fi
-
 # Check if the service account key file exists
-if [[ ! -f "$GCP_CREDENTIALS" ]]; then
-  echo "Error: Service account key file not found: $GCP_CREDENTIALS"
+if [[ ! -f "gcp-key.json" ]]; then
+  echo "Error: Service account key file not found: gcp-key.json"
   exit 1
 fi
 
 # Activate GCP service account
 echo "Activating service account..."
-gcloud auth activate-service-account --key-file="$GCP_CREDENTIALS" || {
+gcloud auth activate-service-account --key-file="gcp-key.json" || {
   echo "Error: Failed to activate service account."
   exit 1
 }
