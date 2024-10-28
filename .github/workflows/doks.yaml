@@ -20,16 +20,16 @@ jobs:
           sudo chmod +x /usr/local/bin/yq
 
       - name: Give execute permission to the script
-        run: chmod +x ./scale_doks.sh
+        run: chmod +x ./DOKS/scale_doks.sh
 
       - name: Scale down node pools
         if: github.event.schedule == '30 14 * * 5'
         env:  
           DO_USER: ${{ secrets.DO_USER }}
-        run: ./scale_doks.sh scale-down
+        run: ./DOKS/scale_doks.sh scale-down
   
       - name: Scale up node pools
         if: github.event.schedule == '0 2 * * 1'
         env:  
           DO_USER: ${{ secrets.DO_USER }}
-        run: ./scale_doks.sh scale-up
+        run: ./DOKS/scale_doks.sh scale-up

@@ -1,0 +1,42 @@
+name: Scale GKE Node Pools Dynamically
+
+on:
+  # schedule:
+  #   - cron: '30 14 * * 5'  # At 8:00 PM IST (2:30 PM UTC) every Friday (scale down)
+  #   - cron: '0 2 * * 1'     # At 7:30 AM IST (2:00 AM UTC) every Monday (scale up)
+  push:
+    branches:
+      - main  # Replace 'main' with your desired branch name
+
+jobs:
+  scale-gke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install yq for YAML parsing
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget
+          wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq
+          sudo chmod +x /usr/local/bin/yq
+
+      - name: Give execute permission to the script
+        run: chmod +x ./GKE/scale_gke.sh
+
+      - name: Scale down node pools
+        if: github.event_name == 'push'  # Triggered on push event
+        env:  
+          GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
+          GCP_PROJECT: ${{ secrets.GCP_PROJECT }}
+          GCP_ZONE: ${{ secrets.GCP_ZONE }}
+        run: ./GKE/scale_gke.sh scale-down
+  
+      # - name: Scale up node pools
+      #   if: github.event.schedule == '0 2 * * 1'
+      #   env:  
+      #     GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
+      #     GCP_PROJECT: ${{ secrets.GCP_PROJECT }}
+      #     GCP_ZONE: ${{ secrets.GCP_ZONE }}
+      #   run: ./GKE/scale_gke.sh scale-up
