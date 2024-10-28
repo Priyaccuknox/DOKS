@@ -24,6 +24,14 @@ jobs:
 
       - name: Give execute permission to the script
         run: chmod +x ./GKE/scale_gke.sh
+      
+      - name: Set up GCP credentials
+        run: |
+          echo "${{ secrets.GCP_CREDENTIALS }}" > gcp-key.json
+          # Check if the file was created
+          ls -l gcp-key.json
+        env:
+          GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
 
       - name: Scale down node pools
         if: github.event_name == 'push'  
