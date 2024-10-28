@@ -10,8 +10,24 @@ if [[ "$operation" != "scale-up" && "$operation" != "scale-down" ]]; then
   exit 1
 fi
 
+# Ensure the GCP_CREDENTIALS variable is set
+if [[ -z "$GCP_CREDENTIALS" ]]; then
+  echo "Error: GCP_CREDENTIALS environment variable is not set."
+  exit 1
+fi
+
+# Check if the service account key file exists
+if [[ ! -f "$GCP_CREDENTIALS" ]]; then
+  echo "Error: Service account key file not found: $GCP_CREDENTIALS"
+  exit 1
+fi
+
 # Activate GCP service account
-gcloud auth activate-service-account --key-file="$GCP_CREDENTIALS"
+echo "Activating service account..."
+gcloud auth activate-service-account --key-file="$GCP_CREDENTIALS" || {
+  echo "Error: Failed to activate service account."
+  exit 1
+}
 
 # Perform the scaling operation for each cluster
 for i in $(seq 0 $(($clusters - 1))); do
@@ -32,7 +48,10 @@ for i in $(seq 0 $(($clusters - 1))); do
   gcloud container clusters resize "$CLUSTER_ID" \
     --node-pool "$NODE_POOL_ID" \
     --num-nodes "$NODE_COUNT" \
-    --quiet
+    --quiet || {
+    echo "Error: Failed to resize the node pool."
+    exit 1
+  }
 
   echo "$operation completed for cluster $CLUSTER_NAME."
 done
