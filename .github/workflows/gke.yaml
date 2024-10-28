@@ -31,7 +31,9 @@ jobs:
           GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
           GCP_PROJECT: ${{ secrets.GCP_PROJECT }}
           GCP_ZONE: ${{ secrets.GCP_ZONE }}
-        run: ./GKE/scale_gke.sh scale-down
+        run: |
+          cd GKE  # Change to the GKE directory
+          ./scale_gke.sh scale-down
   
       # - name: Scale up node pools
       #   if: github.event.schedule == '0 2 * * 1'
@@ -39,4 +41,6 @@ jobs:
       #     GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
       #     GCP_PROJECT: ${{ secrets.GCP_PROJECT }}
       #     GCP_ZONE: ${{ secrets.GCP_ZONE }}
-      #   run: ./GKE/scale_gke.sh scale-up
+      #   run: |
+      #     cd GKE  # Change to the GKE directory
+      #     ./scale_gke.sh scale-up
