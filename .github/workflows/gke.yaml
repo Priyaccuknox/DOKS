@@ -6,7 +6,7 @@ on:
   #   - cron: '0 2 * * 1'     # At 7:30 AM IST (2:00 AM UTC) every Monday (scale up)
   push:
     branches:
-      - main  # Replace 'main' with your desired branch name
+      - main  
 
 jobs:
   scale-gke:
@@ -26,21 +26,17 @@ jobs:
         run: chmod +x ./GKE/scale_gke.sh
 
       - name: Scale down node pools
-        if: github.event_name == 'push'  # Triggered on push event
+        if: github.event_name == 'push'  
         env:  
           GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
-          GCP_PROJECT: ${{ secrets.GCP_PROJECT }}
-          GCP_ZONE: ${{ secrets.GCP_ZONE }}
         run: |
-          cd GKE  # Change to the GKE directory
+          cd GKE  
           ./scale_gke.sh scale-down
   
       # - name: Scale up node pools
       #   if: github.event.schedule == '0 2 * * 1'
       #   env:  
       #     GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
-      #     GCP_PROJECT: ${{ secrets.GCP_PROJECT }}
-      #     GCP_ZONE: ${{ secrets.GCP_ZONE }}
       #   run: |
-      #     cd GKE  # Change to the GKE directory
+      #     cd GKE  
       #     ./scale_gke.sh scale-up
