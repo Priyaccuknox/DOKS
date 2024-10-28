@@ -27,10 +27,11 @@ jobs:
       
       - name: Set up GCP credentials
         run: |
-          echo "${{ secrets.GCP_CREDENTIALS }}" > ./GKE/gcp-key.json
-          # Check if the file was created
+          echo "${{ secrets.GCP_CREDENTIALS }}" | base64 --decode > ./GKE/gcp-key.json
           ls -l ./GKE/gcp-key.json
-
+          cat ./GKE/gcp-key.json
+        shell: bash
+  
       - name: Scale down node pools
         if: github.event_name == 'push'  
         run: |
