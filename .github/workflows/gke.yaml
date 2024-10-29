@@ -25,7 +25,6 @@ jobs:
       - name: Set up GCP credentials
         run: |
           echo "${{ secrets.GCP_CREDENTIALS }}" | base64 -d > ./GKE/gcp-key.json
-          ls -l ./GKE/gcp-key.json
         shell: bash
   
       - name: Read Project ID from config.yaml
@@ -37,7 +36,7 @@ jobs:
       - name: Activate GCP service account
         run: |
           gcloud auth activate-service-account --key-file=./GKE/gcp-key.json
-          gcloud config set project ${{ env.PROJECT_ID }}  # Use the dynamic project ID
+          gcloud config set project ${{ env.PROJECT_ID }}
           gcloud container clusters list  # Optional
 
       - name: Get Access Token
@@ -53,18 +52,10 @@ jobs:
           ./scale_gke.sh scale-down
         env:  
           GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/GKE/gcp-key.json
-          CLOUDSDK_CORE_PROJECT: ${{ env.PROJECT_ID }}  # Use the dynamic project ID
+          CLOUDSDK_CORE_PROJECT: ${{ env.PROJECT_ID }}  
+          ACCESS_TOKEN: ${{ env.ACCESS_TOKEN }}
 
       - name: Make API Request
         run: |
           curl -H "Authorization: Bearer $ACCESS_TOKEN" \
                 "https://container.googleapis.com/v1/projects/${{ env.PROJECT_ID }}/locations/us-central1/clusters/devops-test-cluster"
-
-      # - name: Scale up node pools
-      #   if: github.event.schedule == '0 2 * * 1'
-      #   env:  
-      #     GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/GKE/gcp-key.json
-      #     CLOUDSDK_CORE_PROJECT: ${{ env.PROJECT_ID }}  # Use the dynamic project ID
-      #   run: |
-      #     cd GKE  
-      #     ./scale_gke.sh scale-up
