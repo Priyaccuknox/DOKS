@@ -40,10 +40,10 @@ jobs:
           gcloud container clusters list  # Optional: To verify access
         shell: bash
 
-      - name: Scale down node pools
+      - name: Scale up node pools
         run: |
           cd GKE  
-          ./scale_gke.sh scale-down
+          ./scale_gke.sh scale-up
         env:  
           GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/GKE/gcp-key.json
           CLOUDSDK_CORE_PROJECT: ${{ env.PROJECT_ID }}
