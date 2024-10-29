@@ -22,6 +22,11 @@ jobs:
       - name: Give execute permission to the script
         run: chmod +x ./GKE/scale_gke.sh
       
+      - name: Set up GCP credentials
+        run: |
+          echo "${{ secrets.GCP_CREDENTIALS }}" | base64 -d > ./GKE/gcp-key.json
+        shell: bash
+        
       - name: Set up OAuth Credentials
         env:
           CLIENT_ID: ${{ secrets.GCP_OAUTH_CLIENT_ID }}
