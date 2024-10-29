@@ -1,10 +1,10 @@
 name: Scale GKE Node Pools Dynamically
 
 on:
-  push:
-    branches:
-      - main  
-
+  schedule:
+    - cron: '21 13 * * *'  
+    # - cron: '15 11 * * *'
+    
 jobs:
   scale-gke:
     runs-on: ubuntu-latest
@@ -40,10 +40,16 @@ jobs:
           gcloud container clusters list  # Optional: To verify access
         shell: bash
 
-      - name: Scale up node pools
-        run: |
-          cd GKE  
-          ./scale_gke.sh scale-up
+      - name: Scale down node pools
+        if: github.event.schedule == '21 13 * * *'
         env:  
           GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/GKE/gcp-key.json
           CLOUDSDK_CORE_PROJECT: ${{ env.PROJECT_ID }}
+        run: ./GKE/scale_gke.sh scale-down
+
+      # - name: Scale up node pools
+      #   if: github.event.schedule == '48 11 * * *'
+      #   env:  
+      #     GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/GKE/gcp-key.json
+      #     CLOUDSDK_CORE_PROJECT: ${{ env.PROJECT_ID }}
+      #   run: ./GKE/scale_gke.sh scale-up
