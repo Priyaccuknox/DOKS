@@ -22,28 +22,22 @@ jobs:
       - name: Give execute permission to the script
         run: chmod +x ./GKE/scale_gke.sh
       
-      - name: Set up GCP credentials
+      - name: Set up OAuth Credentials
+        env:
+          CLIENT_ID: ${{ secrets.GCP_OAUTH_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.GCP_OAUTH_CLIENT_SECRET }}
         run: |
-          echo "${{ secrets.GCP_CREDENTIALS }}" | base64 -d > ./GKE/gcp-key.json
-        shell: bash
-  
+          # Request OAuth token
+          TOKEN_RESPONSE=$(curl -s -X POST -d "client_id=$CLIENT_ID&client_secret=$CLIENT_SECRET&grant_type=client_credentials" \
+            https://oauth2.googleapis.com/token)
+          ACCESS_TOKEN=$(echo $TOKEN_RESPONSE | jq -r .access_token)
+          echo "ACCESS_TOKEN=${ACCESS_TOKEN}" >> $GITHUB_ENV
+
       - name: Read Project ID from config.yaml
         id: read_project_id
         run: |
           PROJECT_ID=$(yq '.project_id' GKE/config.yaml)
           echo "PROJECT_ID=${PROJECT_ID}" >> $GITHUB_ENV
-
-      - name: Activate GCP service account
-        run: |
-          gcloud auth activate-service-account --key-file=./GKE/gcp-key.json
-          gcloud config set project ${{ env.PROJECT_ID }}
-          gcloud container clusters list 
-
-      - name: Get Access Token
-        id: get_token
-        run: |
-          ACCESS_TOKEN=$(gcloud auth print-access-token)
-          echo "ACCESS_TOKEN=${ACCESS_TOKEN}" >> $GITHUB_ENV
 
       - name: Scale down node pools
         if: github.event_name == 'push'  
