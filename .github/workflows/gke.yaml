@@ -43,7 +43,7 @@ jobs:
       - name: Scale up node pools
         run: |
           cd GKE  
-          ./scale_gke.sh scale-up
+          ./scale_gke.sh scale-down
         env:  
           GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/GKE/gcp-key.json
           CLOUDSDK_CORE_PROJECT: ${{ env.PROJECT_ID }}
