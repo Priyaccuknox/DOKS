@@ -37,7 +37,7 @@ jobs:
         run: |
           gcloud auth activate-service-account --key-file=./GKE/gcp-key.json
           gcloud config set project ${{ env.PROJECT_ID }}
-          gcloud container clusters list  # Optional
+          gcloud container clusters list 
 
       - name: Get Access Token
         id: get_token
