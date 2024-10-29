@@ -5,4 +5,4 @@ clusters:
     node_pool_id: "test-nodes"        
     scale_up_count: 3                   
     scale_down_count: 1
-    region: "us-central1"
+    location: "us-central1"

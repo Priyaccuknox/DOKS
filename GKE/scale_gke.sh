@@ -35,7 +35,7 @@ for i in $(seq 0 $(($clusters - 1))); do
   CLUSTER_NAME=$(yq ".clusters[$i].name" config.yaml)
   CLUSTER_ID=$(yq ".clusters[$i].cluster_id" config.yaml)
   NODE_POOL_ID=$(yq ".clusters[$i].node_pool_id" config.yaml)
-  REGION=$(yq ".clusters[$i].region" config.yaml)
+  LOCATION=$(yq ".clusters[$i].location" config.yaml)
 
   if [ "$operation" == "scale-up" ]; then
     NODE_COUNT=$(yq ".clusters[$i].scale_up_count" config.yaml)
@@ -44,13 +44,13 @@ for i in $(seq 0 $(($clusters - 1))); do
   fi
 
   echo "Performing $operation for cluster $CLUSTER_NAME..."
-  echo "Setting node pool count to $NODE_COUNT in region $REGION..."
+  echo "Setting node pool count to $NODE_COUNT in location $LOCATION..."
 
   # Perform the scaling operation using gcloud command
   gcloud container clusters resize "$CLUSTER_ID" \
     --node-pool "$NODE_POOL_ID" \
     --num-nodes "$NODE_COUNT" \
-    --region "$REGION" \
+    --location "$LOCATION" \
     --quiet || {
     echo "Error: Failed to resize the node pool for cluster $CLUSTER_NAME."
     exit 1
