@@ -1,6 +1,6 @@
 project_id: "accuknox-cnapp"
 clusters:
-  - name: "accuknox-cnapp"
+  - name: "devops-test-cluster"
     cluster_id: "devops-test-cluster"  
     node_pool_id: "test-nodes"        
     scale_up_count: 3                   
