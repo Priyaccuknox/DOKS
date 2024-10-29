@@ -26,17 +26,6 @@ jobs:
         run: |
           echo "${{ secrets.GCP_CREDENTIALS }}" | base64 -d > ./GKE/gcp-key.json
         shell: bash
-        
-      - name: Set up OAuth Credentials
-        env:
-          CLIENT_ID: ${{ secrets.GCP_OAUTH_CLIENT_ID }}
-          CLIENT_SECRET: ${{ secrets.GCP_OAUTH_CLIENT_SECRET }}
-        run: |
-          # Request OAuth token
-          TOKEN_RESPONSE=$(curl -s -X POST -d "client_id=$CLIENT_ID&client_secret=$CLIENT_SECRET&grant_type=client_credentials" \
-            https://oauth2.googleapis.com/token)
-          ACCESS_TOKEN=$(echo $TOKEN_RESPONSE | jq -r .access_token)
-          echo "ACCESS_TOKEN=${ACCESS_TOKEN}" >> $GITHUB_ENV
 
       - name: Read Project ID from config.yaml
         id: read_project_id
@@ -44,17 +33,17 @@ jobs:
           PROJECT_ID=$(yq '.project_id' GKE/config.yaml)
           echo "PROJECT_ID=${PROJECT_ID}" >> $GITHUB_ENV
 
+      - name: Activate GCP service account
+        run: |
+          gcloud auth activate-service-account --key-file=./GKE/gcp-key.json
+          gcloud config set project ${{ env.PROJECT_ID }}
+          gcloud container clusters list  # Optional: To verify access
+        shell: bash
+
       - name: Scale down node pools
-        if: github.event_name == 'push'  
         run: |
           cd GKE  
           ./scale_gke.sh scale-down
         env:  
           GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/GKE/gcp-key.json
-          CLOUDSDK_CORE_PROJECT: ${{ env.PROJECT_ID }}  
-          ACCESS_TOKEN: ${{ env.ACCESS_TOKEN }}
-
-      - name: Make API Request
-        run: |
-          curl -H "Authorization: Bearer $ACCESS_TOKEN" \
-                "https://container.googleapis.com/v1/projects/${{ env.PROJECT_ID }}/locations/us-central1/clusters/devops-test-cluster"
+          CLOUDSDK_CORE_PROJECT: ${{ env.PROJECT_ID }}
