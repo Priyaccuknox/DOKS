@@ -13,17 +13,21 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Use DigitalOcean User Secret
+      
+      - name: Verify DigitalOcean User Secret
         env:
           DO_USER: ${{ secrets.DO_USER }}
         run: |
-          echo "Using DigitalOcean user: $DO_USER"
+          echo "DO_USER content saved to file for verification."
+          echo "$DO_USER" > do_user.txt
+          cat do_user.txt  # Use with caution for sensitive data
       
-      - name: Decode and Use GCP Credentials
+      - name: Verify Decoded GCP Credentials
         env:
           GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
         run: |
           echo "$GCP_CREDENTIALS" | base64 --decode > gcp_credentials.json
-          echo "Decoded GCP credentials for use."
+          echo "GCP credentials saved to file for verification."
+          cat gcp_credentials.json  # Use with caution for sensitive data
+      
         
