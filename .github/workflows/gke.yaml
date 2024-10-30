@@ -1,10 +1,14 @@
 name: Scale GKE Node Pools Dynamically
 
 on:
-  schedule:
-    - cron: '40 2 * * *'  # Runs at 11:15 PM IST (5:45 PM UTC)
-    - cron: '17 18 * * *'   # Runs at 11:30 PM IST (6:00 PM UTC)
-    
+
+  # schedule:
+  #   - cron: '30 14 * * 5'  # At 8:00 PM IST (2:30 PM UTC) every Friday (scale down)
+  #   - cron: '0 2 * * 1'   # At 7:30 AM IST (2:00 AM UTC) every Monday (scale up)
+
+  push:
+    branches:
+      - main    
 jobs:
   scale-gke:
     runs-on: ubuntu-latest
@@ -40,7 +44,7 @@ jobs:
         shell: bash
 
       - name: Scale down node pools
-        if: github.event.schedule == '40 2 * * *'
+        if: github.event.schedule == '30 14 * * 5'
         env:  
           GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/GKE/gcp-key.json
           CLOUDSDK_CORE_PROJECT: ${{ env.PROJECT_ID }}
@@ -49,7 +53,7 @@ jobs:
           ./scale_gke.sh scale-down
 
       - name: Scale up node pools
-        if: github.event.schedule == '17 18 * * *'
+        if: github.event.schedule == '0 2 * * 1'
         env:  
           GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/GKE/gcp-key.json
           CLOUDSDK_CORE_PROJECT: ${{ env.PROJECT_ID }}
