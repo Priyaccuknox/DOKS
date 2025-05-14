@@ -4,7 +4,9 @@ on:
   schedule:
     - cron: '0 0 * * *'   # every day at 12:00 AM UTC
   workflow_dispatch:       # manual trigger option
-
+  push:
+    branches:
+      - main
 jobs:
   dast-scan:
     runs-on: ubuntu-latest
