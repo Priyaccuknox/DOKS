@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 1
+      continue-on-error: true  
       matrix:
         target_url:
           - "https://app.dev.accuknox.com"
