@@ -10,9 +10,9 @@ on:
 jobs:
   dast-scan:
     runs-on: ubuntu-latest
+    continue-on-error: true  
     strategy:
       max-parallel: 1
-      continue-on-error: true  
       matrix:
         target_url:
           - "https://app.dev.accuknox.com"
