@@ -22,6 +22,12 @@ jobs:
           - "https://app.xcitium.accuknox.com"
           - "https://app.in.accuknox.com"
           - "https://app.nrs.accuknox.com"
+          - "https://cwpp.accuknox.com"
+          - "https://cspm.accuknox.com"
+          - "https://toolkit.accuknox.com"
+          - "https://spire.accuknox.com"
+          - "https://knox-gw.accuknox.com"
+          - "https://pps.accuknox.com"
 
     steps:
       - name: Checkout code
