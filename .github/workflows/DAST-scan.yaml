@@ -25,9 +25,9 @@ jobs:
           - "https://cwpp.accuknox.com"
           - "https://cspm.accuknox.com"
           - "https://toolkit.accuknox.com"
-          - "https://spire.accuknox.com"
-          - "https://knox-gw.accuknox.com"
-          - "https://pps.accuknox.com"
+          - "http://spire.accuknox.com"
+          - "http://knox-gw.accuknox.com"
+          - "http://pps.accuknox.com"
 
     steps:
       - name: Checkout code
